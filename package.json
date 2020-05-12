@@ -1,0 +1,24 @@
+{
+  "name": "webrtc-conference-room",
+  "version": "1.0.0",
+  "description": "A simple demo app for WebRTC audio and video.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tynandebold/webrtc-conference-room.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tynandebold/webrtc-conference-room/issues"
+  },
+  "homepage": "https://github.com/tynandebold/webrtc-conference-room#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}
