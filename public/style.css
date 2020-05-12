@@ -2,14 +2,14 @@
   box-sizing: border-box;
 }
 
-#videosWrapper {
+#videos-wrapper {
   border: 2px solid #ccc;
   height: 480px;
   position: relative;
   width: 640px;
 }
 
-#localVideo {
+#local-video {
   border: 2px solid #ccc;
   bottom: -1px;
   height: 165px;
@@ -18,6 +18,6 @@
   right: 0;
 }
 
-#remoteVideo {
+#remote-video {
   width: 100%;
 }

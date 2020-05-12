@@ -6,20 +6,16 @@
 <body>
   <h1>WebRTC Video Conference Room</h1>
 
-  <form id="roomSelectionWrapper" onsubmit="return false;">
-    <label>Type the room number</label>
-    <input id="roomNumber" type="text" />
-    <button id="goToRoomBtn">Go</button>
+  <form id="room-selection-wrapper" onsubmit="return false;">
+    <label>Type a room ID: </label>
+    <input id="room-id" type="text" />
+    <button id="go-to-room-btn">Go</button>
   </form>
 
-  <div id="videosWrapper" style="display: none;">
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
+  <div id="videos-wrapper" style="display: none;">
+    <video id="local-video" autoplay muted></video>
+    <video id="remote-video" autoplay></video>
   </div>
-
-  <!-- <div id="warningWrapper" style="display: none;">
-    <p>That room is full. Please try another.</p>
-  </div> -->
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="index.js"></script>

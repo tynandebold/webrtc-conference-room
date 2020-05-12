@@ -11,30 +11,34 @@ app.use(express.static("public"));
 
 // Signaling
 io.on("connection", function (socket) {
+  var currentRoomId;
   console.log("A user connected.");
 
-  socket.on("create or join", function (room) {
-    console.log(`Create or join to room ${room}.`);
+  socket.on("create or join", function (roomId) {
+    currentRoomId = roomId;
+    console.log(`Create or join to room with id: ${roomId}.`);
 
-    var myRoom = io.sockets.adapter.rooms[room] || { length: 0 };
+    var myRoom = io.sockets.adapter.rooms[roomId] || { length: 0 };
     var numClients = myRoom.length;
 
-    console.log(`${room} has ${numClients} clients.`);
+    console.log(`Room ${roomId} has ${numClients} clients.`);
 
-    if (numClients == 0) {
-      socket.join(room);
-      socket.emit("created", room);
-    } else if (numClients == 1) {
-      socket.join(room);
-      socket.emit("joined", room);
+    if (numClients === 0) {
+      socket.join(roomId);
+      socket.emit("created", roomId);
+    } else if (numClients === 1) {
+      socket.join(roomId);
+      socket.emit("joined", roomId);
     } else {
-      socket.emit("full", room);
-      socket.broadcast.to(room).emit("full");
+      socket.emit("full", roomId);
+      socket.broadcast.to(roomIdm).emit("full");
+
+      console.log(`Room ${roomId} is full.`);
     }
   });
 
-  socket.on("ready", function (room) {
-    socket.broadcast.to(room).emit("ready");
+  socket.on("ready", function (roomId) {
+    socket.broadcast.to(roomId).emit("ready");
   });
 
   socket.on("candidate", function (event) {
@@ -47,6 +51,10 @@ io.on("connection", function (socket) {
 
   socket.on("answer", function (event) {
     socket.broadcast.to(event.room).emit("answer", event.sdp);
+  });
+
+  socket.on("disconnect", function () {
+    console.log(`Room ${currentRoomId} is now disconnected.`);
   });
 });
 

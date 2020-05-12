@@ -1,12 +1,12 @@
 (function () {
   // Globals
-  var roomNumber;
+  var roomId;
   var localStream;
   var rtcPeerConnection;
   var isCaller;
 
-  var $roomNumInput = document.getElementById("roomNumber");
-  var $localVideo = document.getElementById("localVideo");
+  var $roomIdInput = document.getElementById("room-id");
+  var $localVideo = document.getElementById("local-video");
   var iceServers = {
     iceServers: [
       { urls: "stun:stun.services.mozilla.com" },
@@ -23,18 +23,19 @@
 
   function initEventListeners() {
     document
-      .getElementById("goToRoomBtn")
+      .getElementById("go-to-room-btn")
       .addEventListener("click", handleGoToRoom);
   }
 
   function handleGoToRoom() {
-    if ($roomNumInput.value === "") {
-      alert("Please type a room number");
+    if ($roomIdInput.value === "") {
+      alert("Please type a room id.");
     } else {
-      roomNumber = $roomNumInput.value;
-      socket.emit("create or join", roomNumber);
-      document.getElementById("roomSelectionWrapper").style = "display: none;";
-      document.getElementById("videosWrapper").style = "display: block;";
+      roomId = $roomIdInput.value;
+      socket.emit("create or join", roomId);
+      document.getElementById("room-selection-wrapper").style =
+        "display: none;";
+      document.getElementById("videos-wrapper").style = "display: block;";
     }
   }
 
@@ -58,7 +59,7 @@
       .then(function (stream) {
         localStream = stream;
         $localVideo.srcObject = stream;
-        socket.emit("ready", roomNumber);
+        socket.emit("ready", roomId);
       })
       .catch(function (err) {
         console.log("An error ocurred when accessing media devices", err);
@@ -87,7 +88,7 @@
           socket.emit("offer", {
             type: "offer",
             sdp: sessionDescription,
-            room: roomNumber,
+            room: roomId,
           });
         })
         .catch((error) => {
@@ -111,7 +112,7 @@
           socket.emit("answer", {
             type: "answer",
             sdp: sessionDescription,
-            room: roomNumber,
+            room: roomId,
           });
         })
         .catch((error) => {
@@ -134,7 +135,7 @@
         label: event.candidate.sdpMLineIndex,
         id: event.candidate.sdpMid,
         candidate: event.candidate.candidate,
-        room: roomNumber,
+        room: roomId,
       });
     }
   }
