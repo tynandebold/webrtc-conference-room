@@ -141,7 +141,7 @@
   }
 
   function onAddStream(event) {
-    document.getElementById("remoteVideo").srcObject = event.streams[0];
+    document.getElementById("remote-video").srcObject = event.streams[0];
   }
 
   init();
