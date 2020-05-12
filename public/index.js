@@ -7,7 +7,6 @@
 
   var $roomNumInput = document.getElementById("roomNumber");
   var $localVideo = document.getElementById("localVideo");
-  var $warningWrapper = document.getElementById("warningWrapper");
   var iceServers = {
     iceServers: [
       { urls: "stun:stun.services.mozilla.com" },
@@ -36,7 +35,6 @@
       socket.emit("create or join", roomNumber);
       document.getElementById("roomSelectionWrapper").style = "display: none;";
       document.getElementById("videosWrapper").style = "display: block;";
-      $warningWrapper.style = "display: none;";
     }
   }
 

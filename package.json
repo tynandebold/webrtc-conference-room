@@ -4,7 +4,8 @@
   "description": "A simple demo app for WebRTC audio and video.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "git push heroku master"
   },
   "repository": {
     "type": "git",

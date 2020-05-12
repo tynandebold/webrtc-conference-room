@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+#videosWrapper {
+  border: 2px solid #ccc;
+  height: 480px;
+  position: relative;
+  width: 640px;
+}
+
+#localVideo {
+  border: 2px solid #ccc;
+  bottom: -1px;
+  height: 165px;
+  max-width: 220px;
+  position: absolute;
+  right: 0;
+}
+
+#remoteVideo {
+  width: 100%;
+}
