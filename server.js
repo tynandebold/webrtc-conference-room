@@ -54,7 +54,11 @@ io.on("connection", function (socket) {
   });
 
   socket.on("disconnect", function () {
-    console.log(`Room ${currentRoomId} is now disconnected.`);
+    console.log(
+      currentRoomId
+        ? `${socket.id} in room ${currentRoomId} is now disconnected.`
+        : `${socket.id} is now disconnected.`
+    );
   });
 });
 

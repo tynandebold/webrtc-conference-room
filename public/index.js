@@ -15,7 +15,7 @@
   };
   var streamConstraints = { audio: true, video: true };
 
-  var socket = io();
+  var socket = io({ transports: ["websocket"], upgrade: false });
 
   function init() {
     initEventListeners();
@@ -123,6 +123,14 @@
 
   socket.on("answer", function (event) {
     rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+    console.log("rtcPeerConnection answer: ", rtcPeerConnection);
+  });
+
+  socket.on("disconnect", function () {
+    rtcPeerConnection.close();
+    rtcPeerConnection = null;
+    document.getElementById("room-selection-wrapper").style = "display: block;";
+    document.getElementById("videos-wrapper").style = "display: none;";
   });
 
   // Handler functions
