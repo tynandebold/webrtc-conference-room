@@ -12,15 +12,20 @@
   <h3>Friend-to-friend (p2p) video chat</h3>
   <p>
     This little guy works better than I expected it to. It's built with WebRTC,
-    Express, Socket.io, and hosted on Heroku. Who needs Skype, Google Hangouts,
-    or Zoom when you can just make your own and learn a lot along the way?
+    Express, and Socket.io, then hosted on Heroku. Who needs Skype, Google
+    Hangouts, or Zoom when you can just make your own and learn a lot along the
+    way?
   </p>
 
   <hr />
 
+  <p class="error-message">
+    That room ID is already in use. Please try another.
+  </p>
+
   <form id="room-selection-wrapper" onsubmit="return false;">
     <div>
-      <label>Enter a new room ID or type one someone has sent you: </label>
+      <label>Enter a new chatroom ID or type one someone has sent you: </label>
       <input id="room-id" type="text" />
     </div>
     <button id="go-to-room-btn">Go</button>
@@ -31,7 +36,10 @@
     <video id="remote-video" autoplay></video>
   </div>
 
-  <button id="hang-up">Hang up</button>
+  <div class="call-info">
+    <div>Chatroom ID: <span id="chat-id"></span></div>
+    <button id="hang-up">Hang up</button>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="index.js"></script>

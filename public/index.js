@@ -37,6 +37,8 @@
         localStream = stream;
         $localVideo.srcObject = stream;
         isCaller = true;
+        removeError();
+        addChatroomId(room);
       })
       .catch(function (err) {
         console.log("An error ocurred when accessing media devices", err);
@@ -50,6 +52,8 @@
         localStream = stream;
         $localVideo.srcObject = stream;
         socket.emit("ready", roomId);
+        removeError();
+        addChatroomId(room);
       })
       .catch(function (err) {
         console.log("An error ocurred when accessing media devices", err);
@@ -66,11 +70,7 @@
 
   socket.on("ready", function () {
     if (isCaller) {
-      rtcPeerConnection = new RTCPeerConnection(iceServers);
-      rtcPeerConnection.onicecandidate = onIceCandidate;
-      rtcPeerConnection.ontrack = onAddStream;
-      rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
-      rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+      initSharedPeerConnectionMethods();
       rtcPeerConnection
         .createOffer()
         .then((sessionDescription) => {
@@ -89,11 +89,7 @@
 
   socket.on("offer", function (event) {
     if (!isCaller) {
-      rtcPeerConnection = new RTCPeerConnection(iceServers);
-      rtcPeerConnection.onicecandidate = onIceCandidate;
-      rtcPeerConnection.ontrack = onAddStream;
-      rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
-      rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+      initSharedPeerConnectionMethods();
       rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
       rtcPeerConnection
         .createAnswer()
@@ -116,7 +112,13 @@
     console.log("rtcPeerConnection answer: ", rtcPeerConnection);
   });
 
+  socket.on("full", function (room) {
+    document.body.classList.remove("on-a-call");
+    document.body.classList.add("error");
+  });
+
   socket.on("disconnect", function () {
+    document.getElementById("chat-id").innerText = "";
     var remoteVideo = document.getElementById("remote-video");
     var localVideo = document.getElementById("local-video");
 
@@ -131,10 +133,12 @@
       rtcPeerConnection.onnegotiationneeded = null;
 
       if (localVideo.srcObject) {
+        localVideo.pause();
         localVideo.srcObject.getTracks().forEach((track) => track.stop());
       }
 
       if (remoteVideo.srcObject) {
+        remoteVideo.pause();
         remoteVideo.srcObject.getTracks().forEach((track) => track.stop());
       }
 
@@ -144,6 +148,7 @@
 
     // stop the track here, too, in case the caller enters a room then hangs up
     if (localVideo.srcObject) {
+      localVideo.pause();
       localVideo.srcObject.getTracks().forEach((track) => track.stop());
     }
 
@@ -157,6 +162,16 @@
   });
 
   // Handler functions
+  function initSharedPeerConnectionMethods() {
+    rtcPeerConnection = new RTCPeerConnection(iceServers);
+    rtcPeerConnection.onicecandidate = onIceCandidate;
+    rtcPeerConnection.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+    rtcPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
+    rtcPeerConnection.ontrack = onAddStream;
+    rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
+    rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+  }
+
   function onIceCandidate(event) {
     if (event.candidate) {
       console.log("Sending ICE candidate.");
@@ -168,6 +183,32 @@
         candidate: event.candidate.candidate,
         room: roomId,
       });
+    }
+  }
+
+  function handleICEConnectionStateChangeEvent() {
+    console.log(
+      "ICE connection state changed to " + rtcPeerConnection.iceConnectionState
+    );
+
+    switch (rtcPeerConnection.iceConnectionState) {
+      case "closed":
+      case "failed":
+      case "disconnected":
+        handleHangUp();
+        break;
+    }
+  }
+
+  function handleSignalingStateChangeEvent() {
+    console.log(
+      "WebRTC signaling state changed to: " + rtcPeerConnection.signalingState
+    );
+
+    switch (rtcPeerConnection.signalingState) {
+      case "closed":
+        handleHangUp();
+        break;
     }
   }
 
@@ -188,6 +229,14 @@
 
   function handleHangUp() {
     socket.emit("disconnect");
+  }
+
+  function removeError() {
+    document.body.classList.remove("error");
+  }
+
+  function addChatroomId(room) {
+    document.getElementById("chat-id").innerText = room;
   }
 
   init();

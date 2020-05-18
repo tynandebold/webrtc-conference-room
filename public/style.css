@@ -7,11 +7,20 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: #eaeaea;
   margin: auto;
-  max-width: 640px;
+  max-width: 670px;
 }
 
 hr {
   margin: 1.75em 0;
+}
+
+.error-message {
+  color: darkred;
+  display: none;
+}
+
+.error .error-message {
+  display: block;
 }
 
 #room-selection-wrapper {
@@ -20,31 +29,35 @@ hr {
   justify-content: space-between;
 }
 
+#room-id {
+  max-width: 130px;
+}
+
 #videos-wrapper {
   background-color: #fff;
-  border: 2px solid #ccc;
+  border: 2px solid #bbb;
   box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.06),
     0 3px 6px 0 rgba(0, 0, 0, 0.06);
   display: none;
-  height: 480px;
+  height: 502.5px;
   position: relative;
-  width: 640px;
+  width: 670px;
 }
 
 #local-video {
-  border: 2px solid #ccc;
+  border: 2px solid #bbb;
   bottom: -1px;
   height: 165px;
   max-width: 220px;
   position: absolute;
-  right: 0;
+  right: -1px;
 }
 
 #remote-video {
   width: 100%;
 }
 
-#hang-up {
+.call-info {
   display: none;
   margin-top: 2em;
 }
@@ -54,6 +67,8 @@ hr {
 }
 
 .on-a-call #videos-wrapper,
-.on-a-call #hang-up {
-  display: block;
+.on-a-call .call-info {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }

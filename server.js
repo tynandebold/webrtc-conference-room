@@ -31,7 +31,7 @@ io.on("connection", function (socket) {
       socket.emit("joined", roomId);
     } else {
       socket.emit("full", roomId);
-      socket.broadcast.to(roomIdm).emit("full");
+      socket.broadcast.to(roomId).emit("full");
 
       console.log(`Room ${roomId} is full.`);
     }
