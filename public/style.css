@@ -1,9 +1,31 @@
 * {
   box-sizing: border-box;
+  font-family: "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, sans-serif;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  background-color: #eaeaea;
+  margin: auto;
+  max-width: 640px;
+}
+
+hr {
+  margin: 1.75em 0;
+}
+
+#room-selection-wrapper {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
 }
 
 #videos-wrapper {
+  background-color: #fff;
   border: 2px solid #ccc;
+  box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.06),
+    0 3px 6px 0 rgba(0, 0, 0, 0.06);
+  display: none;
   height: 480px;
   position: relative;
   width: 640px;
@@ -20,4 +42,18 @@
 
 #remote-video {
   width: 100%;
+}
+
+#hang-up {
+  display: none;
+  margin-top: 2em;
+}
+
+.on-a-call #room-selection-wrapper {
+  display: none;
+}
+
+.on-a-call #videos-wrapper,
+.on-a-call #hang-up {
+  display: block;
 }

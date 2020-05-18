@@ -25,18 +25,8 @@
     document
       .getElementById("go-to-room-btn")
       .addEventListener("click", handleGoToRoom);
-  }
 
-  function handleGoToRoom() {
-    if ($roomIdInput.value === "") {
-      alert("Please type a room id.");
-    } else {
-      roomId = $roomIdInput.value;
-      socket.emit("create or join", roomId);
-      document.getElementById("room-selection-wrapper").style =
-        "display: none;";
-      document.getElementById("videos-wrapper").style = "display: block;";
-    }
+    document.getElementById("hang-up").addEventListener("click", handleHangUp);
   }
 
   // Socket message handlers
@@ -127,10 +117,43 @@
   });
 
   socket.on("disconnect", function () {
-    rtcPeerConnection.close();
-    rtcPeerConnection = null;
-    document.getElementById("room-selection-wrapper").style = "display: block;";
-    document.getElementById("videos-wrapper").style = "display: none;";
+    var remoteVideo = document.getElementById("remote-video");
+    var localVideo = document.getElementById("local-video");
+
+    if (rtcPeerConnection) {
+      rtcPeerConnection.ontrack = null;
+      rtcPeerConnection.onremovetrack = null;
+      rtcPeerConnection.onremovestream = null;
+      rtcPeerConnection.onicecandidate = null;
+      rtcPeerConnection.oniceconnectionstatechange = null;
+      rtcPeerConnection.onsignalingstatechange = null;
+      rtcPeerConnection.onicegatheringstatechange = null;
+      rtcPeerConnection.onnegotiationneeded = null;
+
+      if (localVideo.srcObject) {
+        localVideo.srcObject.getTracks().forEach((track) => track.stop());
+      }
+
+      if (remoteVideo.srcObject) {
+        remoteVideo.srcObject.getTracks().forEach((track) => track.stop());
+      }
+
+      rtcPeerConnection.close();
+      rtcPeerConnection = null;
+    }
+
+    // stop the track here, too, in case the caller enters a room then hangs up
+    if (localVideo.srcObject) {
+      localVideo.srcObject.getTracks().forEach((track) => track.stop());
+    }
+
+    remoteVideo.removeAttribute("src");
+    remoteVideo.removeAttribute("srcObject");
+    localVideo.removeAttribute("src");
+    remoteVideo.removeAttribute("srcObject");
+
+    document.getElementById("room-id").value = "";
+    document.body.classList.remove("on-a-call");
   });
 
   // Handler functions
@@ -150,6 +173,21 @@
 
   function onAddStream(event) {
     document.getElementById("remote-video").srcObject = event.streams[0];
+  }
+
+  function handleGoToRoom() {
+    if ($roomIdInput.value === "") {
+      alert("Please type a room ID.");
+    } else {
+      roomId = $roomIdInput.value;
+      socket.emit("create or join", roomId);
+
+      document.body.classList.add("on-a-call");
+    }
+  }
+
+  function handleHangUp() {
+    socket.emit("disconnect");
   }
 
   init();
